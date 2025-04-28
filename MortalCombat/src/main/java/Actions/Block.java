@@ -1,0 +1,23 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Actions;
+
+import Components.GameCharacter;
+
+/**
+ *
+ * @author maria
+ */
+public class Block extends Action {
+
+    @Override
+    public String getType() {
+        return "Block";
+    }
+
+    @Override
+    public void realisation(GameCharacter human, GameCharacter enemy, String enemyActionType) {
+    }
+}
