@@ -6,9 +6,7 @@ package Game;
 
 import Components.GameCharacter;
 
-import java.io.File;
 import java.util.ArrayList;
-//import java.util.Objects;
 
 /**
  *
@@ -49,26 +47,22 @@ public class Location {
     }
 
     private void setEnemyPhoto(GameCharacter enemy) {
-//        File f = new File(System.getProperty("java.class.path"));
-//        File dir = f.getAbsoluteFile().getParentFile();
-//        String path = dir.toString();
-//        enemy.setPhoto(String.format("%s%s.jpg",path,"/"+enemy.getStringName()));
         try {
-        // Формируем имя файла: lowercase без дефисов + .jpg
-        String imageName = enemy.getStringName().toLowerCase().replace("-", "") + ".jpg";
-        // Путь внутри JAR-файла или ресурсов
-        String resourcePath = "/images/" + imageName;
-        java.net.URL imgURL = getClass().getResource(resourcePath);
-        
-        if (imgURL != null) {
-            // Используем существующий метод setPhoto
-            enemy.setPhoto(imgURL.getPath()); 
-        } else {
-            System.err.println("Image not found: " + resourcePath);
+            // Формируем имя файла: lowercase без дефисов + .jpg
+            String imageName = enemy.getStringName().toLowerCase().replace("-", "") + ".jpg";
+            // Путь внутри JAR-файла или ресурсов
+            String resourcePath = "/images/" + imageName;
+            java.net.URL imgURL = getClass().getResource(resourcePath);
+
+            if (imgURL != null) {
+                // Используем существующий метод setPhoto
+                enemy.setPhoto(imgURL.getPath()); 
+            } else {
+                System.err.println("Image not found: " + resourcePath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
     }
 
     public void resetLocation(boolean isNextLocation, int maxEnemies) {

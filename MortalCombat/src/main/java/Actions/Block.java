@@ -18,6 +18,6 @@ public class Block extends Action {
     }
 
     @Override
-    public void realisation(GameCharacter human, GameCharacter enemy, String enemyActionType) {
+    public void realization(GameCharacter human, GameCharacter enemy, String enemyActionType) {
     }
 }

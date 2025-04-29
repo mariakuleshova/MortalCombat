@@ -14,7 +14,7 @@ public class GameCharacter {
 
     private int level;
     private int health;
-    private int maxhealth;
+    private int maxHealth;
     private int damage;
     private int turnsWithDebuff;
     public ImageIcon icon;
@@ -24,7 +24,7 @@ public class GameCharacter {
         this.level = level;
         this.health = health;
         this.damage = damage;
-        this.maxhealth = health;
+        this.maxHealth = health;
         this.name=name;
     }
 
@@ -38,8 +38,8 @@ public class GameCharacter {
         }
     }
 
-    public void setDebuffTurns(int i) {
-        turnsWithDebuff = i;
+    public void setDebuffTurns(int turns) {
+        turnsWithDebuff = turns;
     }
 
     public int getDebuffTurns() {
@@ -53,34 +53,34 @@ public class GameCharacter {
     public ImageIcon getPhoto() {
         return icon;
     }
-    public void setLevel(int i) {
-        this.level = i;
+    public void setLevel(int level) {
+        this.level = level;
     }
     public void addLevel() {
         this.level++;
     }
 
-    public void addHealth(int h) {
-        this.health += h;
+    public void addHealth(int health) {
+        this.health += health;
     }
 
-    public void setHealth(int h) {
-        this.health = h;
+    public void setHealth(int health) {
+        this.health = health;
     }
-    public void setDamage(int d) {
-        this.damage = d;
-    }
-
-    public void addDamage(int d) {
-        this.damage += d;
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
-    public void setMaxHealth(int h) {
-        this.maxhealth = h;
+    public void addDamage(int damage) {
+        this.damage += damage;
     }
 
-    public void addMaxHealth(int h) {
-        this.maxhealth += h;
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public void addMaxHealth(int maxHealth) {
+        this.maxHealth += maxHealth;
     }
 
     public int getLevel() {
@@ -96,7 +96,7 @@ public class GameCharacter {
     }
 
     public int getMaxHealth() {
-        return this.maxhealth;
+        return this.maxHealth;
     }
 
     public CharacterName getName() {

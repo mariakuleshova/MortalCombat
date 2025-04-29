@@ -12,9 +12,9 @@ public class GameResults {
     private String name;
     private int points;
     
-    public GameResults(String n, int p){
-        this.name=n;
-        this.points=p;
+    public GameResults(String name, int points){
+        this.name = name;
+        this.points = points;
     }
 
     public String getName(){

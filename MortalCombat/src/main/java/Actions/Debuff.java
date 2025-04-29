@@ -18,7 +18,7 @@ public class Debuff extends Action {
     }
 
     @Override
-    public void realisation(GameCharacter human, GameCharacter enemy, String enemyActionType) {
+    public void realization(GameCharacter human, GameCharacter enemy, String enemyActionType) {
         switch (enemyActionType) {
             case "Hit", "Debuff", "Heal" -> {
             }

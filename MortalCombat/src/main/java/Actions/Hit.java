@@ -23,7 +23,7 @@ public class Hit extends Action {
     }
 
     @Override
-    public void realisation(GameCharacter human, GameCharacter enemy, String enemyActionType) {
+    public void realization(GameCharacter human, GameCharacter enemy, String enemyActionType) {
         int damage = calculateDamage(human, enemy);
         switch (enemyActionType) {
             case "Hit":

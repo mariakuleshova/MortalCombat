@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * @author maria
  */
 public class Logic {
-    private final int[] experience_for_next_level = {40, 90, 180, 260, 410, 1000};
+    private final int[] experienceForNextLevel = {40, 90, 180, 260, 410, 1000};
 
     public Action chooseEnemyAction(GameCharacter enemy, ArrayList<Action> list) {
         switch (enemy.getName()) {
@@ -45,10 +45,10 @@ public class Logic {
     public void levelUp(Player player, GameCharacter[] enemies) {
         player.addLevel();
         int i = 0;
-        while (player.getNextExperience() >= experience_for_next_level[i]) {
+        while (player.getNextExperience() >= experienceForNextLevel[i]) {
             i = i + 1;
         }
-        player.setNextExperience(experience_for_next_level[i]);
+        player.setNextExperience(experienceForNextLevel[i]);
         for (int j = 0; j < 5; j++) {
             newHealthEnemy(enemies[j], player);
         }
@@ -86,14 +86,14 @@ public class Logic {
         enemy.addLevel();
     }
 
-    public void useItem(GameCharacter human, Items[] items, String name, Mediator mediator) {
+    public void useItem(GameCharacter human, Items[] items, String name, Controller controller) {
         switch (name) {
             case "First item" -> {
                 if (items[0].getCount() > 0) {
                     human.addHealth((int) (human.getMaxHealth() * 0.25));
                     items[0].setCount(-1);
                 } else {
-                    mediator.openCantUseItemDialog();
+                    controller.openCantUseItemDialog();
                 }
             }
             case "Second item" -> {
@@ -101,10 +101,10 @@ public class Logic {
                     human.addHealth((int) (human.getMaxHealth() * 0.5));
                     items[1].setCount(-1);
                 } else {
-                    mediator.openCantUseItemDialog();
+                    controller.openCantUseItemDialog();
                 }
             }
-            case "Third item" -> mediator.openCantUseItemDialog();
+            case "Third item" -> controller.openCantUseItemDialog();
         }
     }
 

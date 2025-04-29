@@ -3,7 +3,7 @@
  */
 package Main;
 
-import View.JFrames;
+import View.View;
 
 /**
  *
@@ -12,7 +12,7 @@ import View.JFrames;
 public class MortalCombat {
 
     public static void main(String[] args) {
-        JFrames app = new JFrames();
-        app.setVisible(true);
+        View view = new View();
+        view.setVisible(true);
     }
 }

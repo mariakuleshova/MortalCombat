@@ -8,7 +8,7 @@ import Components.Player;
 import Components.Items;
 import Components.GameCharacter;
 import Actions.Action;
-import View.JFrames;
+import View.View;
 
 import javax.swing.*;
 
@@ -18,8 +18,7 @@ import static Components.CharacterName.You;
  *
  * @author maria
  */
-public class Mediator {
-
+public class Controller {
     private static final int DIALOG_WIDTH = 600;
     private static final int DIALOG_HEIGHT = 500;
     private static final String ACTION_FORMAT = "%s %s %s";
@@ -48,7 +47,7 @@ public class Mediator {
     private JRadioButton firstItemButton;
     private JRadioButton secondItemButton;
     private JRadioButton thirdItemButton;
-    public JFrames gui;
+    public View gui;
 
     public void setActionLabels(GameCharacter enemy, GameCharacter human, Action enemyAction, Action playerAction) {
         updateLabel(playerActionLabel, human.getStringName(), "uses", playerAction.getType());

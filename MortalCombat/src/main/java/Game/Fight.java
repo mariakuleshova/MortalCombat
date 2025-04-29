@@ -18,7 +18,7 @@ import static Components.CharacterName.SHAO_KAHN;
  * @author maria
  */
 public class Fight {
-    Mediator mediator;
+    Controller controller;
     Player player;
     GameCharacter enemy;
     public Location location = new Location();
@@ -31,8 +31,8 @@ public class Fight {
         }
     };
 
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
     public void setHuman(Player player) {
@@ -52,28 +52,28 @@ public class Fight {
     }
 
     public void playerMove(Action enemyAction, Action playerAction) {
-        mediator.setActionLabels(enemy, player, enemyAction, playerAction);
-        playerAction.realisation(player, enemy, enemyAction.getType());
+        controller.setActionLabels(enemy, player, enemyAction, playerAction);
+        playerAction.realization(player, enemy, enemyAction.getType());
     }
 
     public void enemyMove(Action enemyAction, Action playerAction) {
-        mediator.setActionLabels(player, enemy, enemyAction, playerAction);
-        playerAction.realisation(enemy, player, enemyAction.getType());
+        controller.setActionLabels(player, enemy, enemyAction, playerAction);
+        playerAction.realization(enemy, player, enemyAction.getType());
     }
 
     public void checkDebuff() {
         if (!enemy.isDebuffed()) {
-            mediator.setDebuffLabel(enemy, false);
+            controller.setDebuffLabel(enemy, false);
         }
         if (enemy.isDebuffed()) {
-            mediator.setDebuffLabel(enemy, true);
+            controller.setDebuffLabel(enemy, true);
             enemy.loseDebuffTurn();
         }
         if (!player.isDebuffed()) {
-            mediator.setDebuffLabel(player, false);
+            controller.setDebuffLabel(player, false);
         }
         if (player.isDebuffed()) {
-            mediator.setDebuffLabel(enemy, true);
+            controller.setDebuffLabel(enemy, true);
             player.loseDebuffTurn();
         }
 
@@ -105,10 +105,10 @@ public class Fight {
                 }
             }
         }
-        mediator.setRoundTexts(player, enemy);
+        controller.setRoundTexts(player, enemy);
         checkDebuff();
-        mediator.setHealthBar(player);
-        mediator.setHealthBar(enemy);
+        controller.setHealthBar(player);
+        controller.setHealthBar(enemy);
         checkDeath(gameResults, locationsNumber, enemiesList);
     }
 
@@ -116,8 +116,8 @@ public class Fight {
         if (player.getHealth() <= 0 & player.getItems()[2].getCount() > 0) {
             player.setHealth((int) (player.getMaxHealth() * 0.05));
             player.getItems()[2].setCount(-1);
-            mediator.setHealthBar(player);
-            mediator.revive(player, player.getItems());
+            controller.setHealthBar(player);
+            controller.revive(player, player.getItems());
         }
         if (player.getHealth() <= 0 | enemy.getHealth() <= 0) {
             if (location.getCurrentLocation() == locationsNumber & SHAO_KAHN.equals(enemy.getName())) {
@@ -131,9 +131,9 @@ public class Fight {
 
     public void endRound(GameCharacter[] enemiesList) {
         Logic action = new Logic();
-        mediator.makeEndFightDialogVisible();
+        controller.makeEndFightDialogVisible();
         if (player.getHealth() > 0) {
-            mediator.setRoundEndText("You win");
+            controller.setRoundEndText("You win");
             if (enemy.getName().equals(SHAO_KAHN)) {
                 action.addItems(38, 23, 8, player.getItems());
                 action.addPointsBoss(player);
@@ -144,7 +144,7 @@ public class Fight {
             }
         } else {
             reset(enemiesList);
-            mediator.setRoundEndText(enemy.getStringName() + " win");
+            controller.setRoundEndText(enemy.getStringName() + " win");
         }
     }
 
@@ -184,15 +184,15 @@ public class Fight {
                 top = true;
             }
         }
-        mediator.gameEnding(text, top);
+        controller.gameEnding(text, top);
     }
 
     public void newRound() {
-        mediator.setPlayerMaxHealthBar(player);
-        mediator.setEnemyMaxHealthBar(enemy);
+        controller.setPlayerMaxHealthBar(player);
+        controller.setEnemyMaxHealthBar(enemy);
         player.setHealth(player.getMaxHealth());
         enemy.setHealth(enemy.getMaxHealth());
-        mediator.setHealthBar(player);
-        mediator.setHealthBar(enemy);
+        controller.setHealthBar(player);
+        controller.setHealthBar(enemy);
     }
 }
