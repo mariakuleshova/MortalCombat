@@ -8,7 +8,7 @@ import Components.Player;
 import Components.Items;
 import Components.GameCharacter;
 import Actions.Action;
-import View.View;
+import View.JFrames;
 
 import javax.swing.*;
 
@@ -47,7 +47,7 @@ public class Controller {
     private JRadioButton firstItemButton;
     private JRadioButton secondItemButton;
     private JRadioButton thirdItemButton;
-    public View gui;
+    public JFrames view;
 
     public void setActionLabels(GameCharacter enemy, GameCharacter human, Action enemyAction, Action playerAction) {
         updateLabel(playerActionLabel, human.getStringName(), "uses", playerAction.getType());
@@ -104,7 +104,7 @@ public class Controller {
     }
 
     public void makeEndFightDialogVisible() {
-        gui.setPanelEnabled(gui.getFightPanel(),false);
+        view.setPanelEnabled(view.getFightPanel(),false);
         endFightDialog.setVisible(true);
         endFightDialog.setBounds(300, 150, 700, 600);
     }

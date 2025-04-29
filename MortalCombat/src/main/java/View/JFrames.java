@@ -5,7 +5,7 @@
 package View;
 
 import Game.Helper;
-import Game.Mediator;
+import Game.Controller;
 import Components.Player;
 import Components.Items;
 import Components.GameCharacter;
@@ -21,7 +21,7 @@ import javax.swing.*;
 
 public class JFrames extends javax.swing.JFrame {
 
-    Mediator mediator;
+    Controller controller;
     Helper helper = new Helper();
     ArrayList<GameCharacter> enemiesList = null;
     Items[] items = new Items[3];
@@ -43,7 +43,6 @@ public class JFrames extends javax.swing.JFrame {
         File f = new File(System.getProperty("java.class.path"));
         File dir = f.getAbsoluteFile().getParentFile();
         String path = dir.toString();
-//        playerIconLabel.setIcon(new ImageIcon(path +"/"+ "Kitana.jpg"));
         playerIconLabel.setIcon(new ImageIcon(getClass().getResource("/images/kitana.jpg")));
         attributesGroup.add(healthButton);
         attributesGroup.add(damageButton);
@@ -53,37 +52,37 @@ public class JFrames extends javax.swing.JFrame {
         items[0] = new Items("Малое зелье лечение", 0);
         items[1] = new Items("Большое зелье лечение", 0);
         items[2] = new Items("Крест возрождения", 0);
-        mediator = new Mediator();
-        setMediatorComponents();
-        mediator.gui = this;
-        helper.fight.setMediator(mediator);
+        controller = new Controller();
+        setControllerComponents();
+        controller.view = this;
+        helper.fight.setController(controller);
     }
 
-    public void setMediatorComponents() {
-        mediator.setEnemyHealthLabel(this.enemyHealthLabel);
-        mediator.setPlayerHealthLabel(this.playerHealthLabel);
-        mediator.setEndFightDialog(this.endFightDialog);
-        mediator.setPointsValueLabel(this.pointsValueLabel);
-        mediator.setExperienceValueLabel(this.experienceValueLabel);
-        mediator.setPlayerLevelLabel(this.playerLevelLabel);
-        mediator.setEnemyLevelLabel(this.enemyLevelLabel);
-        mediator.setPlayerDamageValueLabel(this.playerDamageValueLabel);
-        mediator.setEndRoundLabel(this.endRoundLabel);
-        mediator.setPlayerHealthBar(this.playerHealthBar);
-        mediator.setEnemyHealthBar(this.enemyHealthBar);
-        mediator.setEndGameDialog(this.endGameDialog);
-        mediator.setEndGameWithoutLadderDialog(this.endGameWithoutLadderDialog);
-        mediator.setFightFrame(this.fightFrame);
-        mediator.setEnemyDebuffLabel(this.enemyDebuffLabel);
-        mediator.setVictoryLabel(this.victoryLabel);
-        mediator.setEndGameWithoutLadderTitlleLabel(this.endGameWithoutLadderTitlleLabel);
-        mediator.setPlayerActionLabel(this.playerActionLabel);
-        mediator.setPlayerDebuffLabel(this.playerDebuffLabel);
-        mediator.setEnemyActionLabel(this.enemyActionLabel);
-        mediator.setFirstItemButton(this.firstItemButton);
-        mediator.setSecondItemButton(this.secondItemButton);
-        mediator.setThirdItemButton(this.thirdItemButton);
-        mediator.setCantUseItemDialog(this.cantUseItemDialog);
+    public void setControllerComponents() {
+        controller.setEnemyHealthLabel(this.enemyHealthLabel);
+        controller.setPlayerHealthLabel(this.playerHealthLabel);
+        controller.setEndFightDialog(this.endFightDialog);
+        controller.setPointsValueLabel(this.pointsValueLabel);
+        controller.setExperienceValueLabel(this.experienceValueLabel);
+        controller.setPlayerLevelLabel(this.playerLevelLabel);
+        controller.setEnemyLevelLabel(this.enemyLevelLabel);
+        controller.setPlayerDamageValueLabel(this.playerDamageValueLabel);
+        controller.setEndRoundLabel(this.endRoundLabel);
+        controller.setPlayerHealthBar(this.playerHealthBar);
+        controller.setEnemyHealthBar(this.enemyHealthBar);
+        controller.setEndGameDialog(this.endGameDialog);
+        controller.setEndGameWithoutLadderDialog(this.endGameWithoutLadderDialog);
+        controller.setFightFrame(this.fightFrame);
+        controller.setEnemyDebuffLabel(this.enemyDebuffLabel);
+        controller.setVictoryLabel(this.victoryLabel);
+        controller.setEndGameWithoutLadderTitlleLabel(this.endGameWithoutLadderTitlleLabel);
+        controller.setPlayerActionLabel(this.playerActionLabel);
+        controller.setPlayerDebuffLabel(this.playerDebuffLabel);
+        controller.setEnemyActionLabel(this.enemyActionLabel);
+        controller.setFirstItemButton(this.firstItemButton);
+        controller.setSecondItemButton(this.secondItemButton);
+        controller.setThirdItemButton(this.thirdItemButton);
+        controller.setCantUseItemDialog(this.cantUseItemDialog);
     }
 
     public JPanel getFightPanel() {
@@ -1196,11 +1195,11 @@ public class JFrames extends javax.swing.JFrame {
         enemyDamageValueLabel.setText(Integer.toString(helper.fight.getEnemy().getDamage()));
         enemyHealthLabel.setText(Integer.toString(helper.fight.getEnemy().getHealth()) + "/" + Integer.toString(helper.fight.getEnemy().getMaxHealth()));
         enemyHeroLabel.setText(helper.fight.getEnemy().getStringName());
-        mediator.setHealthBar(helper.fight.getEnemy());
+        controller.setHealthBar(helper.fight.getEnemy());
         enemyHealthBar.setMaximum(helper.fight.getEnemy().getMaxHealth());
         helper.fight.newRound();
 
-        mediator.setNewRoundTexts(helper.fight.getHuman(), helper.fight.getEnemy(), helper.fight.getHuman().getItems());
+        controller.setNewRoundTexts(helper.fight.getHuman(), helper.fight.getEnemy(), helper.fight.getHuman().getItems());
 
         endFightDialog.dispose();
     }//GEN-LAST:event_nextRoundButtonActionPerformed
@@ -1251,10 +1250,10 @@ public class JFrames extends javax.swing.JFrame {
             nameButton = "Third item";
         }
         Player player = helper.fight.getHuman();
-        helper.action.useItem(player, player.getItems(), nameButton, mediator);
-        mediator.setHealthBar(player);
+        helper.action.useItem(player, player.getItems(), nameButton, controller);
+        controller.setHealthBar(player);
         playerHealthLabel.setText(player.getHealth() + "/" + player.getMaxHealth());
-        mediator.setBagText(player.getItems());
+        controller.setBagText(player.getItems());
     }//GEN-LAST:event_useItemButtonActionPerformed
 
     private void itemsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemsButtonActionPerformed
@@ -1275,7 +1274,7 @@ public class JFrames extends javax.swing.JFrame {
         if (locationsNumber<=0) return;
         setLocationsFrame.setVisible(false);
         locationLabel.setText("Текущая локация: " + helper.fight.location.getCurrentLocation() + "/" + locationsNumber);
-        helper.fight.setHuman(helper.newHuman(mediator, items));
+        helper.fight.setHuman(helper.newHuman(controller, items));
         helper.fight.location.setCurrentEnemies(helper.fight.getHuman().getLevel());
         fightFrame.setVisible(true);
         fightFrame.setSize(1000, 700);
@@ -1289,12 +1288,12 @@ public class JFrames extends javax.swing.JFrame {
         enemyDamageValueLabel.setText(Integer.toString(helper.fight.getEnemy().getDamage()));
         enemyHealthLabel.setText(helper.fight.getEnemy().getHealth() + "/" + Integer.toString(helper.fight.getEnemy().getMaxHealth()));
         enemyHeroLabel.setText(helper.fight.getEnemy().getStringName());
-        mediator.setHealthBar(helper.fight.getEnemy());
+        controller.setHealthBar(helper.fight.getEnemy());
         enemyHealthBar.setMaximum(helper.fight.getEnemy().getMaxHealth());
 
         helper.fight.newRound();
 
-        mediator.setNewRoundTexts(helper.fight.getHuman(), helper.fight.getEnemy(), helper.fight.getHuman().getItems());
+        controller.setNewRoundTexts(helper.fight.getHuman(), helper.fight.getEnemy(), helper.fight.getHuman().getItems());
 
         endFightDialog.dispose();
     }//GEN-LAST:event_startWithLocationsButtonActionPerformed
@@ -1313,7 +1312,7 @@ public class JFrames extends javax.swing.JFrame {
         } else {
             helper.action.addDamageToPlayer(helper.fight.getHuman());
         }
-        mediator.setNewRoundTexts(helper.fight.getHuman(), helper.fight.getEnemy(), helper.fight.getHuman().getItems());
+        controller.setNewRoundTexts(helper.fight.getHuman(), helper.fight.getEnemy(), helper.fight.getHuman().getItems());
         levelUp.dispose();
         setPanelEnabled(fightPanel,true);
 
