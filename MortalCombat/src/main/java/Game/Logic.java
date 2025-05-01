@@ -9,39 +9,134 @@ import Components.Items;
 import Components.GameCharacter;
 import Actions.Action;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- *
+ * Класс, содержащий основную игровую логику и адаптивную систему поведения противников
+ * Реализует:
+ * Адаптивный выбор действий противниками
+ * Систему прокачки персонажа
+ * Механику использования предметов
+ * Генерацию наград за победу
  * @author maria
  */
 public class Logic {
     private final int[] experienceForNextLevel = {40, 90, 180, 260, 410, 1000};
+    private static final int HISTORY_SIZE = 3;
 
-    public Action chooseEnemyAction(GameCharacter enemy, ArrayList<Action> list) {
+    /**
+     * Выбирает действие для противника на основе анализа
+     * поведения игрока
+     * 
+     * @param enemy текущий противник
+     * @param actions
+     * @param playerHistory история последних действий игрока
+     * @return выбранное действие
+     * @throws IllegalArgumentException если enemy == null
+     */
+    public Action chooseEnemyAction(GameCharacter enemy, List<Action> actions, List<String> playerHistory) {
+        Map<String, Double> actionWeights = new HashMap<>();
+
+        // Базовые вероятности для каждого типа врага
         switch (enemy.getName()) {
             case SUB_ZERO -> {
-                return list.get((int) (Math.random() * 3));
+                actionWeights.put("Hit", 0.4);
+                actionWeights.put("Block", 0.3);
+                actionWeights.put("Debuff", 0.3);
             }
             case SHAO_KAHN -> {
-                list.remove(2);
-                return list.get((int) (Math.random() * 3));
+                actionWeights.put("Hit", 0.6);
+                actionWeights.put("Block", 0.4);
+            }
+            case LIU_KANG -> {
+                actionWeights.put("Hit", 0.5);
+                actionWeights.put("Counter", 0.5);
             }
             default -> {
-                return list.get((int) (Math.random() * 2));
+                actionWeights.put("Hit", 0.7);
+                actionWeights.put("Block", 0.3);
             }
+        }
+
+        // Адаптация на основе действий игрока
+        adjustWeightsByPlayerActions(actionWeights, playerHistory);
+
+        return selectWeightedAction(actions, actionWeights);
+    }
+
+    private void adjustWeightsByPlayerActions(Map<String, Double> weights, List<String> playerHistory) {
+        long playerHits = playerHistory.stream().filter(a -> a.equals("Hit")).count();
+        long playerBlocks = playerHistory.stream().filter(a -> a.equals("Block")).count();
+
+        if (playerHits > HISTORY_SIZE / 2) {
+            weights.put("Block", weights.getOrDefault("Block", 0.0) * 1.5);
+            weights.put("Counter", weights.getOrDefault("Counter", 0.0) * 1.3);
+        }
+
+        if (playerBlocks > HISTORY_SIZE / 2) {
+            weights.put("Debuff", weights.getOrDefault("Debuff", 0.0) * 1.4);
+            weights.put("Hit", weights.get("Hit") * 0.8);
+        }
+
+        normalizeWeights(weights);
+    }
+    
+    private void normalizeWeights(Map<String, Double> weights) {
+        // Рассчитываем сумму всех весов
+        double totalWeight = weights.values().stream()
+            .mapToDouble(Double::doubleValue)
+            .sum();
+
+        // Нормализуем веса, если сумма не нулевая
+        if (totalWeight > 0) {
+            weights.replaceAll((action, weight) -> weight / totalWeight);
+        } 
+        // Дефолтные значения при нулевой сумме
+        else {
+            double defaultWeight = 1.0 / weights.size();
+            weights.replaceAll((action, weight) -> defaultWeight);
         }
     }
 
+    private Action selectWeightedAction(List<Action> actions, Map<String, Double> weights) {
+        double total = weights.values().stream().mapToDouble(Double::doubleValue).sum();
+        double random = Math.random() * total;
+
+        double current = 0;
+        for (Action action : actions) {
+            current += weights.getOrDefault(action.getType(), 0.0);
+            if (random <= current) {
+                return action;
+            }
+        }
+        return actions.get(actions.size() - 1);
+    }
+
+    /**
+     *
+     * @param player
+     */
     public void addPoints(Player player) {
         player.setExperience(20 + 5 * player.getLevel());
         player.setPoints(20 + 5 * player.getLevel() + player.getHealth() / 4);
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public boolean checkExperience(Player player) {
         return player.getExperience() >= player.getNextExperience();
     }
 
+    /**
+     *
+     * @param player
+     * @param enemies
+     */
     public void levelUp(Player player, GameCharacter[] enemies) {
         player.addLevel();
         int i = 0;
@@ -54,11 +149,22 @@ public class Logic {
         }
     }
 
+    /**
+     *
+     * @param player
+     */
     public void addPointsBoss(Player player) {
         player.setExperience(50);
         player.setPoints(65 + player.getHealth() / 2);
     }
 
+    /**
+     *
+     * @param k1
+     * @param k2
+     * @param k3
+     * @param items
+     */
     public void addItems(int k1, int k2, int k3, Items[] items) {
         double i = Math.random();
         if (i < k1 * 0.01) {
@@ -72,20 +178,40 @@ public class Logic {
         }
     }
 
+    /**
+     *
+     * @param player
+     */
     public void addHealthToPlayer(Player player) {
         player.addMaxHealth(40 + 5 * player.getLevel());
     }
 
+    /**
+     *
+     * @param player
+     */
     public void addDamageToPlayer(Player player) {
         player.addDamage(5 + player.getLevel());
     }
 
+    /**
+     *
+     * @param enemy
+     * @param player
+     */
     public void newHealthEnemy(GameCharacter enemy, Player player) {
         enemy.addMaxHealth(enemy.getMaxHealth() * (35 - 3 * player.getLevel()) / 100);
         enemy.addDamage(enemy.getDamage() * (20 + player.getLevel()) / 100);
         enemy.addLevel();
     }
 
+    /**
+     *
+     * @param human
+     * @param items
+     * @param name
+     * @param controller
+     */
     public void useItem(GameCharacter human, Items[] items, String name, Controller controller) {
         switch (name) {
             case "First item" -> {
@@ -108,6 +234,10 @@ public class Logic {
         }
     }
 
+    /**
+     *
+     * @param enemiesList
+     */
     public void resetEnemies(GameCharacter[] enemiesList) {
         for (GameCharacter enemy : enemiesList) {
             enemy.setLevel(1);

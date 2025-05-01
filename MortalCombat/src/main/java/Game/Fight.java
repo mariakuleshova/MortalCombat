@@ -8,19 +8,28 @@ import Components.Player;
 import Components.GameCharacter;
 import Components.GameResults;
 import Actions.*;
-
-import java.util.ArrayList;
-
 import static Components.CharacterName.SHAO_KAHN;
 
+import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+
 /**
- *
+ * Контроллер боевой механики, управляющий взаимодействием между игроком
+ * и противником в рамках одного раунда
+ * Основные функции:
+ * Обработка действий игрока и противника
+ * Отслеживание истории действий игрока
+ * Проверка условий победы/поражения
+ * Взаимодействие с Представлением через Контроллер
  * @author maria
  */
 public class Fight {
     Controller controller;
     Player player;
     GameCharacter enemy;
+
     public Location location = new Location();
     public ArrayList<Action> actionsList = new ArrayList<>() {
         {
@@ -30,37 +39,72 @@ public class Fight {
             add(new Heal());
         }
     };
+    private final Deque<String> playerActionHistory = new ArrayDeque<>();
+    private static final int HISTORY_SIZE = 3;
 
+    /**
+     *
+     * @param controller
+     */
     public void setController(Controller controller) {
         this.controller = controller;
     }
 
+    /**
+     *
+     * @param player
+     */
     public void setHuman(Player player) {
         this.player = player;
     }
 
+    /**
+     *
+     * @param enemy
+     */
     public void setEnemy(GameCharacter enemy) {
         this.enemy = enemy;
     }
 
+    /**
+     *
+     * @return
+     */
     public Player getHuman() {
         return this.player;
     }
 
+    /**
+     *
+     * @return
+     */
     public GameCharacter getEnemy() {
         return this.enemy;
     }
 
+    /**
+     *
+     * @param enemyAction
+     * @param playerAction
+     */
     public void playerMove(Action enemyAction, Action playerAction) {
         controller.setActionLabels(enemy, player, enemyAction, playerAction);
         playerAction.realization(player, enemy, enemyAction.getType());
     }
 
+    /**
+     *
+     * @param enemyAction
+     * @param playerAction
+     */
     public void enemyMove(Action enemyAction, Action playerAction) {
         controller.setActionLabels(player, enemy, enemyAction, playerAction);
         playerAction.realization(enemy, player, enemyAction.getType());
     }
 
+    /**
+     *
+     */
     public void checkDebuff() {
         if (!enemy.isDebuffed()) {
             controller.setDebuffLabel(enemy, false);
@@ -79,9 +123,24 @@ public class Fight {
 
     }
 
+    /**
+     * Обрабатывает один раунд боя.
+     * 
+     * @param a номер действия игрока (0 - блок, 1 - атака, 2 - дебафф)
+     * @param gameResults список для сохранения результатов игры
+     * @param locationsNumber общее количество локаций
+     * @param enemiesList массив всех возможных противников
+     */
     public void hit(int a, ArrayList<GameResults> gameResults, int locationsNumber, GameCharacter[] enemiesList) {
         Logic action = new Logic();
-        Action enemyAction = action.chooseEnemyAction(enemy, new ArrayList<>(actionsList));
+        // Получаем историю действий игрока
+        List<String> history = getPlayerActionHistory();
+
+        // Передаем историю в метод выбора действия
+        Action enemyAction = action.chooseEnemyAction(enemy, new ArrayList<>(actionsList), history);
+
+        // Логируем действие игрока
+        logPlayerAction(actionsList.get(a).getType());
         switch (a) {
             case 0 -> {
                 playerMove(enemyAction,
@@ -112,6 +171,12 @@ public class Fight {
         checkDeath(gameResults, locationsNumber, enemiesList);
     }
 
+    /**
+     *
+     * @param gameResults
+     * @param locationsNumber
+     * @param enemiesList
+     */
     public void checkDeath(ArrayList<GameResults> gameResults, int locationsNumber, GameCharacter[] enemiesList) {
         if (player.getHealth() <= 0 & player.getItems()[2].getCount() > 0) {
             player.setHealth((int) (player.getMaxHealth() * 0.05));
@@ -129,6 +194,10 @@ public class Fight {
         }
     }
 
+    /**
+     *
+     * @param enemiesList
+     */
     public void endRound(GameCharacter[] enemiesList) {
         Logic action = new Logic();
         controller.makeEndFightDialogVisible();
@@ -148,6 +217,10 @@ public class Fight {
         }
     }
 
+    /**
+     *
+     * @param enemiesList
+     */
     public void reset(GameCharacter[] enemiesList) {
         Logic action = new Logic();
         player.setDamage(16);
@@ -162,6 +235,11 @@ public class Fight {
         location.resetLocation(false, player.getLevel());
     }
 
+    /**
+     *
+     * @param gameResults
+     * @param enemiesList
+     */
     public void endFinalRound(ArrayList<GameResults> gameResults, GameCharacter[] enemiesList) {
         Logic action = new Logic();
         action.resetEnemies(enemiesList);
@@ -187,6 +265,9 @@ public class Fight {
         controller.gameEnding(text, top);
     }
 
+    /**
+     *
+     */
     public void newRound() {
         controller.setPlayerMaxHealthBar(player);
         controller.setEnemyMaxHealthBar(enemy);
@@ -194,5 +275,24 @@ public class Fight {
         enemy.setHealth(enemy.getMaxHealth());
         controller.setHealthBar(player);
         controller.setHealthBar(enemy);
+    }
+    
+    /**
+     *
+     * @param action
+     */
+    public void logPlayerAction(String action) {
+        if (playerActionHistory.size() >= HISTORY_SIZE) {
+            playerActionHistory.removeFirst();
+        }
+        playerActionHistory.addLast(action);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public List<String> getPlayerActionHistory() {
+        return new ArrayList<>(playerActionHistory);
     }
 }

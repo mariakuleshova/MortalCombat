@@ -11,6 +11,10 @@ import View.JFrames;
  */
 public class MortalCombat {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         JFrames view = new JFrames();
         view.setVisible(true);

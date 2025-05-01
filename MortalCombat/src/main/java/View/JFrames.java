@@ -19,8 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+/**
+ * Главное окно приложения. Содержит все компоненты графического интерфейса
+ * @author maria
+ */
 public class JFrames extends javax.swing.JFrame {
-
     Controller controller;
     Helper helper = new Helper();
     ArrayList<GameCharacter> enemiesList = null;
@@ -28,7 +31,9 @@ public class JFrames extends javax.swing.JFrame {
     String nameButton = "";
     int locationsNumber = 0;
 
-
+    /**
+     * Инициализирует компоненты интерфейса и игровую логику
+     */
     public JFrames() {
 
         initComponents();
@@ -85,6 +90,10 @@ public class JFrames extends javax.swing.JFrame {
         controller.setCantUseItemDialog(this.cantUseItemDialog);
     }
 
+    /**
+     *
+     * @return
+     */
     public JPanel getFightPanel() {
         return fightPanel;
     }
@@ -1318,6 +1327,11 @@ public class JFrames extends javax.swing.JFrame {
 
     }//GEN-LAST:event_chooseAttributeButtonActionPerformed
 
+    /**
+     *
+     * @param panel
+     * @param isEnabled
+     */
     public void setPanelEnabled(JPanel panel, Boolean isEnabled) {
         if(levelUp.isVisible()) return;
         panel.setEnabled(isEnabled);

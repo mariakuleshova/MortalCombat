@@ -7,10 +7,17 @@ package Components;
 import static Components.CharacterName.*;
 
 /**
- *
+ * Фабрика для создания противников
  * @author maria
  */
 public class EnemyFabric {
+    /**
+     * Создает нового противника заданного типа
+     * 
+     * @param characterName тип противника из CharacterName
+     * @return новый экземпляр GameCharacter
+     * @see CharacterName
+     */
     public GameCharacter create(CharacterName characterName) {
         return switch (characterName){
             default -> null;

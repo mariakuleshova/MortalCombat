@@ -7,21 +7,34 @@ package Actions;
 import Components.GameCharacter;
 
 /**
- *
+ * Действие атаки
+ * Наносит урон противнику
  * @author maria
  */
 public class Hit extends Action {
-
     private static final double DEBUFF_DAMAGE_MULTIPLIER = 1.25;
     private static final double BLOCK_DAMAGE_MULTIPLIER = 0.5;
     private static final double DEBUFF_BLOCK_DAMAGE_MULTIPLIER = 1.15;
     private static final double HEAL_DAMAGE_MULTIPLIER = 2.0;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return "Hit";
     }
 
+    /**
+     * Реализует логику нанесения урона с учетом:
+     * Состояния дебаффа
+     * Действия противника
+     * Случайных модификаторов
+     * @param human
+     * @param enemy
+     * @param enemyActionType
+     */
     @Override
     public void realization(GameCharacter human, GameCharacter enemy, String enemyActionType) {
         int damage = calculateDamage(human, enemy);
