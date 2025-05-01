@@ -45,9 +45,6 @@ public class JFrames extends javax.swing.JFrame {
         helper.writeToTable(recordsTable);
         helper.setEnemies();
         helper.fight.location.setFullEnemiesList(helper.getEnemies());
-        File f = new File(System.getProperty("java.class.path"));
-        File dir = f.getAbsoluteFile().getParentFile();
-        String path = dir.toString();
         playerIconLabel.setIcon(new ImageIcon(getClass().getResource("/images/kitana.jpg")));
         attributesGroup.add(healthButton);
         attributesGroup.add(damageButton);

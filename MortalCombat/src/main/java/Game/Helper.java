@@ -166,8 +166,12 @@ public class Helper {
         if (externalFile.exists()) {
             try (XSSFWorkbook book = new XSSFWorkbook(externalFile)) {
                 readDataFromWorkbook(book);
-            } catch (InvalidFormatException ex) {
-                Logger.getLogger(Helper.class.getName()).log(Level.SEVERE, null, ex);
+            }  catch (IOException | InvalidFormatException ex) {
+            Logger.getLogger(Helper.class.getName()).log(
+                Level.SEVERE, 
+                "Ошибка чтения внешнего файла Results.xlsx", 
+                ex
+            );
             }
         } 
         // Если нет - копируем из ресурсов и читаем
@@ -182,6 +186,13 @@ public class Helper {
 
                 readDataFromWorkbook(book);
             }
+         catch (IOException ex) {
+        Logger.getLogger(Helper.class.getName()).log(
+            Level.SEVERE, 
+            "Ошибка копирования файла из ресурсов", 
+            ex
+            );
+        }
         }
     }
     

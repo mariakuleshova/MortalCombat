@@ -5,6 +5,7 @@
 package Game;
 
 import Components.GameCharacter;
+import java.net.URL;
 
 import java.util.ArrayList;
 
@@ -77,11 +78,10 @@ public class Location {
             String imageName = enemy.getStringName().toLowerCase().replace("-", "") + ".jpg";
             // Путь внутри JAR-файла или ресурсов
             String resourcePath = "/images/" + imageName;
-            java.net.URL imgURL = getClass().getResource(resourcePath);
-
+            URL imgURL = getClass().getResource(resourcePath);
+            
             if (imgURL != null) {
-                // Используем существующий метод setPhoto
-                enemy.setPhoto(imgURL.getPath()); 
+                enemy.setPhoto(imgURL); 
             } else {
                 System.err.println("Image not found: " + resourcePath);
             }

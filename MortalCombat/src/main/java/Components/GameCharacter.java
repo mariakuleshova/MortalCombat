@@ -4,6 +4,7 @@
  */
 package Components;
 
+import java.net.URL;
 import javax.swing.ImageIcon;
 
 /**
@@ -86,6 +87,14 @@ public class GameCharacter {
      */
     public void setPhoto(String path) {
         icon = new ImageIcon(path);
+    }
+    
+    public void setPhoto(URL imageUrl) {
+        if (imageUrl != null) {
+            this.icon = new ImageIcon(imageUrl);
+        } else {
+            System.err.println("Image URL is null");
+        }
     }
 
     /**
